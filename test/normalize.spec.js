@@ -293,6 +293,40 @@ describe('included is normalized', () => {
 });
 
 describe('relationships', () => {
+  it('relationship not requested', () => {
+    const json = {
+      data: [
+        {
+          type: 'post',
+          relationships: {
+            question: {},
+          },
+          id: 2620,
+          attributes: {
+            text: 'hello',
+          },
+        },
+      ],
+    };
+
+    const output = {
+      post: {
+        2620: {
+          type: 'post',
+          id: 2620,
+          attributes: {
+            text: 'hello',
+          },
+          relationships: {},
+        },
+      },
+    };
+
+    const result = normalize(json);
+
+    expect(result).to.deep.equal(output);
+  });
+
   it('empty to-one', () => {
     const json = {
       data: [

@@ -3,6 +3,7 @@ import isArray from 'lodash/isArray';
 import isNull from 'lodash/isNull';
 import keys from 'lodash/keys';
 import merge from 'lodash/merge';
+import omitBy from 'lodash/omitBy';
 
 function wrap(json) {
   if (isArray(json)) {
@@ -35,7 +36,7 @@ function camelizeNestedKeys(attributeValue) {
 }
 
 function extractRelationships(relationships, { camelizeKeys, camelizeTypeValues }) {
-  const ret = {};
+  let ret = {};
   keys(relationships).forEach((key) => {
     const relationship = relationships[key];
     const name = camelizeKeys ? camelCase(key) : key;
@@ -65,6 +66,10 @@ function extractRelationships(relationships, { camelizeKeys, camelizeTypeValues 
       ret[name].links = camelizeKeys ? camelizeNestedKeys(relationship.links) : relationship.links;
     }
   });
+
+  // Discard all empty relationship objects
+  ret = omitBy(ret, v => v !== {})
+
   return ret;
 }
 
